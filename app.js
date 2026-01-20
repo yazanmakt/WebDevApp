@@ -25,6 +25,7 @@ app.use((req, res, next) => {
 // routes
 app.use(authRoutes);
 
+
 // protected home
 app.get("/", requireAuth, (req, res) => {
     res.render("home", { user: req.session.user });
