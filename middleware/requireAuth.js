@@ -4,3 +4,4 @@ module.exports = function requireAuth(req, res, next) {
     }
     next();
 };
+// added this as a note
