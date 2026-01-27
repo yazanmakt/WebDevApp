@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Favorites</title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/cyborg/bootstrap.min.css">
+</head>
+
+<body class="p-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary m-0">YouTube Favorites</h2>
+
+            <div class="text-end">
+                <div class="text-light small">
+                    Logged in as: <strong>
+                        <%= user.fullName %>
+                    </strong> (<%= user.email %>)
+                </div>
+                <a class="btn btn-sm btn-outline-light mt-2" href="/logout">Logout</a>
+            </div>
+        </div>
+
+        <!-- Top: Search UI (placeholder) -->
+        <div class="card border-primary mb-4">
+            <div class="card-body">
+                <h5 class="card-title text-info">Search YouTube</h5>
+                <form class="row g-2" method="GET" action="/favorites">
+                    <div class="col-md-10">
+                        <input class="form-control" name="q" placeholder="Search..." value="<%= query %>">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-success w-100">Search</button>
+                    </div>
+                </form>
+
+                <div class="text-muted mt-3">
+                    <% if (results && results.length> 0) { %>
+                        <hr class="my-3">
+
+                        <h6 class="text-info mb-3">Search Results</h6>
+
+                        <div class="row g-3">
+                            <% results.forEach(r=> { %>
+                                <div class="col-md-6">
+                                    <div class="card bg-dark h-100">
+                                        <div class="row g-0">
+                                            <div class="col-4">
+                                                <img src="<%= r.thumbnailUrl %>" class="img-fluid rounded-start">
+                                            </div>
+                                            <div class="col-8">
+                                                <div class="card-body">
+                                                    <div class="mb-2">
+                                                        <h6 class="card-title text-light fw-bold">
+                                                            <%= r.title %>
+                                                        </h6>
+                                                        <p class="text-muted small mb-1">
+                                                            YouTube Video
+                                                        </p>
+                                                    </div>
+
+
+                                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                                        <a href="<%= r.videoUrl %>" target="_blank" class="text-info">
+                                                            Watch
+                                                        </a>
+
+                                                        <form method="POST" action="/favorites/add">
+                                                            <input type="hidden" name="videoId"
+                                                                value="<%= r.videoId %>">
+                                                            <input type="hidden" name="title" value="<%= r.title %>">
+                                                            <input type="hidden" name="thumbnailUrl"
+                                                                value="<%= r.thumbnailUrl %>">
+                                                            <input type="hidden" name="videoUrl"
+                                                                value="<%= r.videoUrl %>">
+                                                            <button class="btn btn-sm btn-success">Add</button>
+                                                        </form>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }) %>
+                        </div>
+                        <% } %>
+
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+        <!-- Bottom: Favorites -->
+        <div class="card border-secondary">
+            <div class="card-body">
+                <h5 class="card-title text-info">Saved Favorites</h5>
+
+                <% if (favorites && favorites.length> 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Thumbnail</th>
+                                    <th>Title</th>
+                                    <th>Link</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% favorites.forEach(f=> { %>
+                                    <tr>
+                                        <td style="width:140px;">
+                                            <% if (f.thumbnailUrl) { %>
+                                                <img src="<%= f.thumbnailUrl %>" style="width:120px;height:auto;" />
+                                                <% } %>
+                                        </td>
+                                        <td>
+                                            <%= f.title %>
+                                        </td>
+                                        <td>
+                                            <a class="text-info" target="_blank" href="<%= f.videoUrl %>">Watch</a>
+                                        </td>
+                                        <td class="text-end">
+                                            <form method="POST" action="/favorites/delete/<%= f.id %>">
+                                                <button class="btn btn-sm btn-danger">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% } else { %>
+                        <p class="text-muted mb-0">No favorites yet.</p>
+                        <% } %>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
